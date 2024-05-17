@@ -1,11 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import MainNavigation from './navigation/MainNavigation';
+import { NavigationContainer } from '@react-navigation/native';
+import { getFontFamily } from './assets/fonts/helper'
 
 const App = () => {
   return (
-    <View>
-      <Text>Appssw</Text>
-    </View>
+    <NavigationContainer>
+        <MainNavigation/>
+    </NavigationContainer>
   )
 }
 
