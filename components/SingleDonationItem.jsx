@@ -26,7 +26,7 @@ const SingleDonationItem = ({uri,badgeTitle,donationTitle,price}) => {
   )
 }
 
-SingleDonationItem.PropTypes = {
+SingleDonationItem.propTypes = {
     uri:PropTypes.string.isRequired,
     badgeTitle:PropTypes.string.isRequired,
     donationTitle:PropTypes.string.isRequired,

@@ -1,46 +1,104 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import globalStyle from '../assets/styles/globalStyle'
-import Header from '../components/Header'
-import Button from '../components/Button'
-import Tabs from '../components/Tabs'
-import Badge from '../components/Badge'
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
-import Search from '../components/Search'
-import SingleDonationItem from '../components/SingleDonationItem'
-import { horizontalScale } from '../assets/styles/scalling'
+import {
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Image,
+} from 'react-native';
+import React from 'react';
+import globalStyle from '../assets/styles/globalStyle';
+import Header from '../components/Header';
+import Tabs from '../components/Tabs';
+import Search from '../components/Search';
+import SingleDonationItem from '../components/SingleDonationItem';
+import {
+  horizontalScale,
+  scaleFontSize,
+  verticalScale,
+} from '../assets/styles/scalling';
+import {useDispatch, useSelector} from 'react-redux';
+import {getFontFamily} from '../assets/fonts/helper';
+import {getFontScale} from 'react-native-device-info';
+import {resetToInitialState} from '../redux/reducers/User';
 
 const Home = () => {
-  return (
-    <SafeAreaView style={[globalStyle.backgroundWhite,globalStyle.flex]}>
-       {/* <Search onSearch={(value)=>{console.log(value);}}/> */}
-       <View style={styles.ItemContainer}>
-         <SingleDonationItem 
-            badgeTitle={"Environment"}
-            donationTitle={"Tree Cactus"}
-            price={44}
-            uri={"https://img.pixers.pics/pho_wat(s3:700/FO/44/24/64/31/700_FO44246431_ab024cd8251bff09ce9ae6ecd05ec4a8.jpg,525,700,cms:2018/10/5bd1b6b8d04b8_220x50-watermark.png,over,305,650,jpg)/stickers-cactus-cartoon-illustration.jpg.jpg"}
-         />
-         <SingleDonationItem 
-            badgeTitle={"Environment"}
-            donationTitle={"Tree Cactus"}
-            price={44}
-            uri={"https://img.pixers.pics/pho_wat(s3:700/FO/44/24/64/31/700_FO44246431_ab024cd8251bff09ce9ae6ecd05ec4a8.jpg,525,700,cms:2018/10/5bd1b6b8d04b8_220x50-watermark.png,over,305,650,jpg)/stickers-cactus-cartoon-illustration.jpg.jpg"}
-         />
-       </View>
-    </SafeAreaView>
-  )
-}
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  // console.log(user);
+  // dispatch(resetToInitialState());
 
+  return (
+    <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* user info section */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.headerIntroText}>Hello,</Text>
+            <View style={styles.userName}>
+              <Header
+                tiitle={user.firstName + ' ' + user.lastName[0] + '. 👋'}
+              />
+            </View>
+          </View>
+          <Image
+            source={{uri: user.profileImage}}
+            style={styles.profileImage}
+            resizeMode="contain"
+          />
+        </View>
+
+        {/* search section */}
+        <View style={styles.searachBox}>
+          <Search placeholder={'Search'} />
+        </View>
+        {/* highlighted image section */}
+        <Pressable style={styles.highlightedImageContainer} >
+          <Image
+            source={require('../assets/images/highlighted_image.png')}
+            resizeMode="contain"
+            style={styles.highlightedImage}
+          />
+        </Pressable>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
-  ItemContainer:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    padding:horizontalScale(24)
+  header: {
+    marginTop: verticalScale(20),
+    marginHorizontal: horizontalScale(24),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerIntroText: {
+    fontFamily: getFontFamily('Inter'),
+    fontSize: scaleFontSize(16),
+    lineHeight: scaleFontSize(19),
+    fontWeight: '400',
+    color: '#636776',
+  },
+  userName: {
+    marginTop: verticalScale(5),
+  },
+  profileImage: {
+    width: horizontalScale(50),
+    height: verticalScale(50),
+  },
+  searachBox: {
+    marginHorizontal: horizontalScale(24),
+    marginTop: verticalScale(20),
+  },
+  highlightedImageContainer:{
+    marginHorizontal:horizontalScale(24)
+  },
+  highlightedImage:{
+    width:'100%',
+    height:verticalScale(160)
   }
-})
+});
 
-
-export default Home
+export default Home;

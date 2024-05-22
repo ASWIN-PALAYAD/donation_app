@@ -1,6 +1,6 @@
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useRef, useState} from 'react';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome'; 
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import {
   horizontalScale,
@@ -8,9 +8,9 @@ import {
   verticalScale,
 } from '../assets/styles/scalling';
 import {getFontFamily} from '../assets/fonts/helper';
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 
-const Search = ({onSearch}) => {
+const Search = ({onSearch,placeholder}) => {
   const [search, setSearch] = useState('');
 
   const textInputRef = useRef(null);
@@ -31,7 +31,7 @@ const Search = ({onSearch}) => {
         size={scaleFontSize(22)}
       />
       <TextInput style={styles.searchInput} ref={textInputRef} 
-      value={search} onChangeText={(value)=>handleSearch(value)} />
+      value={search} onChangeText={(value)=>handleSearch(value)} placeholder={placeholder}  />
     </Pressable>
   );
 };
@@ -58,10 +58,12 @@ const styles = StyleSheet.create({
 
 Search.defultProps = {
   onSearch: () => {},
+  placeholder: 'Search'
 };
 
 Search.propTypes = {
   onSearch: PropTypes.func,
+  placeholder:PropTypes.string
 };
 
 export default Search;
