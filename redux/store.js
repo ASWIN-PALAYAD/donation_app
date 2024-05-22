@@ -5,10 +5,11 @@ import { persistReducer,persistStore } from "redux-persist";
 import {logger} from 'redux-logger';
 
 import User from "./reducers/User";
-import { getDefaultConfig } from "@react-native/metro-config";
+import Categories from "./reducers/Categories";
 
 const rootReducer = combineReducers({
     user : User,
+    categories:Categories
 });
 
 const configuration = {

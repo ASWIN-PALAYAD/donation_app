@@ -8,7 +8,7 @@ import {
   verticalScale,
 } from '../assets/styles/scalling';
 
-const Tabs = ({title, isInactive, onPress}) => {
+const Tabs = ({title, isInactive, onPress,tabId}) => {
   const [width, setWidth] = useState(0);
   const textRef = useRef(null);
   const paddingHorizontal = 33;
@@ -18,10 +18,9 @@ const Tabs = ({title, isInactive, onPress}) => {
 
   return (
     <Pressable
-      disabled={isInactive}
       style={[styles.TabContainer, isInactive && styles.inactiveTab,tabwidth]}
       onPress={() => {
-        onPress();
+        onPress(tabId);
       }}>
       <Text
         onTextLayout={event => {
@@ -44,6 +43,7 @@ Tabs.propTypes = {
   title: PropTypes.string.isRequired,
   isInactive: PropTypes.bool,
   onPress: PropTypes.func,
+  tabId:PropTypes.number.isRequired
 };
 
 const styles = StyleSheet.create({
