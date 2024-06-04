@@ -27,9 +27,10 @@ import {
   resetCategories,
   updateSelectedCategoryId,
 } from '../redux/reducers/Categories';
-import {resetDonation} from '../redux/reducers/Donations';
+import {resetDonation, updateSelectedDonationId} from '../redux/reducers/Donations';
+import { Routes } from '../navigation/Routes';
 
-const Home = () => {
+const Home = ({navigation}) => {
   const user = useSelector(state => state.user);
   const categories = useSelector(state => state.categories);
   const donations = useSelector(state => state.donations);
@@ -159,7 +160,8 @@ const Home = () => {
                     )[0].name
                   }
                   onPress={selectedDonationId =>{
-                    
+                    dispatch(updateSelectedDonationId(selectedDonationId))
+                    navigation.navigate(Routes.SingleDonationItem);
                   }}
                   donationTitle={value.name}
                   donationItemId={value.donationItemId}
