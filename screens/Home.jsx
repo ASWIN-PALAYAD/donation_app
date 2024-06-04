@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Pressable,
   SafeAreaView,
@@ -23,37 +23,55 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getFontFamily} from '../assets/fonts/helper';
 import {getFontScale} from 'react-native-device-info';
 import {resetToInitialState} from '../redux/reducers/User';
-import { updateSelectedCategoryId } from '../redux/reducers/Categories';
+import {
+  resetCategories,
+  updateSelectedCategoryId,
+} from '../redux/reducers/Categories';
+import {resetDonation} from '../redux/reducers/Donations';
 
 const Home = () => {
   const user = useSelector(state => state.user);
   const categories = useSelector(state => state.categories);
+  const donations = useSelector(state => state.donations);
   const dispatch = useDispatch();
+
+  //   dispatch(resetToInitialState());
+  // dispatch(resetCategories());
+  // dispatch(resetDonation());
+
+  // console.log("donation", donations);
 
   const [categoryPage, setCategoryPage] = useState(1);
   const [categoryList, setCategoryList] = useState([]);
   const [isLoadingCategory, setIsLoadingCategory] = useState(false);
+  const [donationItems, setDonationItems] = useState([]);
   const categoryPageSize = 4;
 
-  const pagination = (items,pageNumber,pageSize) => {
-    startIndex = (pageNumber -1)*pageSize;
+  const pagination = (items, pageNumber, pageSize) => {
+    startIndex = (pageNumber - 1) * pageSize;
     const endIndex = startIndex + pageSize;
 
-    if(startIndex >= items.length){
+    if (startIndex >= items.length) {
       return [];
     }
-    return items.slice(startIndex,endIndex);
-  }
+    return items.slice(startIndex, endIndex);
+  };
+
+  useEffect(() => {
+    const items = donations.items.filter(value =>
+      value.categoryIds.includes(categories.selectedCategoryId),
+    );
+    setDonationItems(items);
+  }, [categories.selectedCategoryId]);
 
   useEffect(() => {
     setIsLoadingCategory(true);
-    setCategoryList(pagination(categories.categories,categoryPage,categoryPageSize));
-    setCategoryPage(pre => pre+1)
+    setCategoryList(
+      pagination(categories.categories, categoryPage, categoryPageSize),
+    );
+    setCategoryPage(pre => pre + 1);
     setIsLoadingCategory(false);
-  }, [])
-  
- 
-  // dispatch(resetToInitialState());
+  }, []);
 
   return (
     <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>
@@ -90,23 +108,26 @@ const Home = () => {
         {/* categories list section */}
 
         <View style={styles.categories}>
-
           <View style={styles.categoryHeader}>
-            <Header tiitle={"Select Category"} type={2} />
+            <Header tiitle={'Select Category'} type={2} />
           </View>
 
           <FlatList
             onEndReachedThreshold={0.5}
-            onEndReached={()=>{
-              if(isLoadingCategory){
+            onEndReached={() => {
+              if (isLoadingCategory) {
                 return;
               }
-              console.log('user reached and start fetch newxt item');
+              // console.log('user reached and start fetch newxt item');
               setIsLoadingCategory(true);
-              let newData = pagination(categories.categories,categoryPage,categoryPageSize);
-              if(newData.length > 0){
-                setCategoryList(preState => [...preState,...newData]);
-                setCategoryPage(prevState => prevState+1);
+              let newData = pagination(
+                categories.categories,
+                categoryPage,
+                categoryPageSize,
+              );
+              if (newData.length > 0) {
+                setCategoryList(preState => [...preState, ...newData]);
+                setCategoryPage(prevState => prevState + 1);
               }
               setIsLoadingCategory(false);
             }}
@@ -119,12 +140,36 @@ const Home = () => {
                   tabId={item.categoryId}
                   title={item.name}
                   isInactive={item.categoryId != categories.selectedCategoryId}
-                  onPress={(value)=>dispatch(updateSelectedCategoryId(value))}
+                  onPress={value => dispatch(updateSelectedCategoryId(value))}
                 />
               </View>
             )}
           />
         </View>
+
+        {/* donation display section */}
+        {donationItems?.length > 0 && (
+          <View style={styles.donationItemsContainer}>
+            {donationItems.map(value => (
+              <View key={value.donationItemId} style={styles.singleDonationItem}>
+                <SingleDonationItem
+                  badgeTitle={
+                    categories.categories.filter(
+                      val => val.categoryId === categories.selectedCategoryId,
+                    )[0].name
+                  }
+                  onPress={selectedDonationId =>{
+                    
+                  }}
+                  donationTitle={value.name}
+                  donationItemId={value.donationItemId}
+                  uri={value.image}
+                  price={parseFloat(value.price)}
+                />
+              </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -166,12 +211,24 @@ const styles = StyleSheet.create({
   categories: {
     marginLeft: horizontalScale(24),
   },
-  categoryHeader:{
-    marginVertical:verticalScale(15)
+  categoryHeader: {
+    marginVertical: verticalScale(15),
   },
   categoryItem: {
     marginRight: horizontalScale(10),
   },
+  donationItemsContainer: {
+    marginTop: verticalScale(20),
+    marginHorizontal: horizontalScale(24),
+    flexDirection:'row',
+    justifyContent:'space-between',
+    flexWrap:'wrap'
+  },
+  singleDonationItem:{
+    maxWidth:'45%',
+    marginBottom:verticalScale(23)
+
+  }
 });
 
 export default Home;

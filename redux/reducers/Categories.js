@@ -59,7 +59,7 @@ const initialState ={
       
 }
 
-const Categories = createSlice({
+const Categories = createSlice({ 
     name:'categories',
     initialState:initialState,
     reducers:{

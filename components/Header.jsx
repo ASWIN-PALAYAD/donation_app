@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {getFontFamily} from '../assets/fonts/helper';
 import {scaleFontSize} from '../assets/styles/scalling';
 
-const Header = ({tiitle, type,color}) => {
+const Header = ({tiitle, type, color, numberOfLines}) => {
   const styleToApply = () => {
     switch (type) {
       case 1:
@@ -20,7 +20,11 @@ const Header = ({tiitle, type,color}) => {
 
   return (
     <View style={styles.HeaderContainer}>
-      <Text style={[styleToApply(type),color && {color:color}]}>{tiitle}</Text>
+      <Text
+        style={[styleToApply(type), color && {color: color}]}
+        numberOfLines={numberOfLines ? numberOfLines : null}>
+        {tiitle}
+      </Text>
     </View>
   );
 };
@@ -28,13 +32,14 @@ const Header = ({tiitle, type,color}) => {
 Header.default = {
   tiitle: '',
   type: 1,
-  default:'#000000'
+  default: '#000000',
 };
 
 Header.propTypes = {
   tiitle: PropTypes.string,
   type: PropTypes.number,
-  color:PropTypes.string
+  color: PropTypes.string,
+  numberOfLines: PropTypes.number,
 };
 
 const styles = StyleSheet.create({
