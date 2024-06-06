@@ -27,8 +27,11 @@ import {
   resetCategories,
   updateSelectedCategoryId,
 } from '../redux/reducers/Categories';
-import {resetDonation, updateSelectedDonationId} from '../redux/reducers/Donations';
-import { Routes } from '../navigation/Routes';
+import {
+  resetDonation,
+  updateSelectedDonationId,
+} from '../redux/reducers/Donations';
+import {Routes} from '../navigation/Routes';
 
 const Home = ({navigation}) => {
   const user = useSelector(state => state.user);
@@ -151,25 +154,32 @@ const Home = ({navigation}) => {
         {/* donation display section */}
         {donationItems?.length > 0 && (
           <View style={styles.donationItemsContainer}>
-            {donationItems.map(value => (
-              <View key={value.donationItemId} style={styles.singleDonationItem}>
-                <SingleDonationItem
-                  badgeTitle={
-                    categories.categories.filter(
-                      val => val.categoryId === categories.selectedCategoryId,
-                    )[0].name
-                  }
-                  onPress={selectedDonationId =>{
-                    dispatch(updateSelectedDonationId(selectedDonationId))
-                    navigation.navigate(Routes.SingleDonationItem);
-                  }}
-                  donationTitle={value.name}
-                  donationItemId={value.donationItemId}
-                  uri={value.image}
-                  price={parseFloat(value.price)}
-                />
-              </View>
-            ))}
+            {donationItems.map(value => {
+
+                const categoryInformation = categories.categories.find(
+                  val => val.categoryId === categories.selectedCategoryId,
+                )
+
+              return (
+                <View
+                  key={value.donationItemId}
+                  style={styles.singleDonationItem}>
+                  <SingleDonationItem
+                    badgeTitle={categoryInformation.name}
+                    onPress={selectedDonationId => {
+                      dispatch(updateSelectedDonationId(selectedDonationId));
+                      navigation.navigate(Routes.SingleDonationItem, {
+                        categoryInformation
+                      });
+                    }}
+                    donationTitle={value.name}
+                    donationItemId={value.donationItemId}
+                    uri={value.image}
+                    price={parseFloat(value.price)}
+                  />
+                </View>
+              );
+            })}
           </View>
         )}
       </ScrollView>
@@ -222,15 +232,14 @@ const styles = StyleSheet.create({
   donationItemsContainer: {
     marginTop: verticalScale(20),
     marginHorizontal: horizontalScale(24),
-    flexDirection:'row',
-    justifyContent:'space-between',
-    flexWrap:'wrap'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
   },
-  singleDonationItem:{
-    maxWidth:'45%',
-    marginBottom:verticalScale(23)
-
-  }
+  singleDonationItem: {
+    maxWidth: '45%',
+    marginBottom: verticalScale(23),
+  },
 });
 
 export default Home;
