@@ -8,13 +8,13 @@ import Header from '../components/Header';
 import Button from '../components/Button';
 import { Routes } from '../navigation/Routes';
 import BackButton from '../components/BackButton';
+import { createUser } from '../api/user';
 
 const Registration = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
 
-  console.log(Password);
 
   return (
     <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>
@@ -50,8 +50,8 @@ const Registration = ({navigation}) => {
           secureTextEntry={true}
         />
         </View>
-        <View style={globalStyle.marginBottom24}>
-          <Button title='Register'  />
+        <View style={globalStyle.marginBottom24} >
+          <Button title='Register' onPress={async () => await createUser(fullName,email,Password)}  />
         </View>
         <Pressable style={styles.registerLink} onPress={()=>navigation.navigate(Routes.Login)}>
           <Header tiitle={"hava an account, Please Login"} type={3} color={'#156CF7'}/>
