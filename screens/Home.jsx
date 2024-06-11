@@ -32,6 +32,7 @@ import {
   updateSelectedDonationId,
 } from '../redux/reducers/Donations';
 import {Routes} from '../navigation/Routes';
+import { logout } from '../api/user';
 
 const Home = ({navigation}) => {
   const user = useSelector(state => state.user);
@@ -44,6 +45,7 @@ const Home = ({navigation}) => {
   // dispatch(resetDonation());
 
   // console.log("donation", donations);
+  // console.log(user);
 
   const [categoryPage, setCategoryPage] = useState(1);
   const [categoryList, setCategoryList] = useState([]);
@@ -85,16 +87,25 @@ const Home = ({navigation}) => {
           <View>
             <Text style={styles.headerIntroText}>Hello,</Text>
             <View style={styles.userName}>
-              <Header
-                tiitle={user.firstName + ' ' + user.lastName[0] + '. 👋'}
-              />
+              <Header tiitle={user.displayName + ' 👋'} />
             </View>
           </View>
-          <Image
-            source={{uri: user.profileImage}}
-            style={styles.profileImage}
-            resizeMode="contain"
-          />
+
+          <View style={styles.imageSection}>
+            <Image
+              source={{uri: user.profileImage}}
+              style={styles.profileImage}
+              resizeMode="contain"
+            />
+          </View>
+          <Pressable
+            onPress={async() => {
+              await logout();
+              dispatch(resetToInitialState());
+
+            }}>
+            <Header tiitle={'Logout'} type={3} color={'#156CF7'} />
+          </Pressable>
         </View>
 
         {/* search section */}
@@ -155,10 +166,9 @@ const Home = ({navigation}) => {
         {donationItems?.length > 0 && (
           <View style={styles.donationItemsContainer}>
             {donationItems.map(value => {
-
-                const categoryInformation = categories.categories.find(
-                  val => val.categoryId === categories.selectedCategoryId,
-                )
+              const categoryInformation = categories.categories.find(
+                val => val.categoryId === categories.selectedCategoryId,
+              );
 
               return (
                 <View
@@ -169,7 +179,7 @@ const Home = ({navigation}) => {
                     onPress={selectedDonationId => {
                       dispatch(updateSelectedDonationId(selectedDonationId));
                       navigation.navigate(Routes.SingleDonationItem, {
-                        categoryInformation
+                        categoryInformation,
                       });
                     }}
                     donationTitle={value.name}
@@ -205,6 +215,7 @@ const styles = StyleSheet.create({
   userName: {
     marginTop: verticalScale(5),
   },
+
   profileImage: {
     width: horizontalScale(50),
     height: verticalScale(50),

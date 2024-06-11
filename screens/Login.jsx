@@ -9,12 +9,16 @@ import Button from '../components/Button';
 import { Routes } from '../navigation/Routes';
 import { loginUser } from '../api/user';
 import { getFontFamily } from '../assets/fonts/helper';
+import { useDispatch } from 'react-redux';
+import { login, resetToInitialState } from '../redux/reducers/User';
 
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  const dispathch = useDispatch()
+  // dispathch(resetToInitialState());
 
   return (
     <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>
@@ -55,6 +59,7 @@ const Login = ({navigation}) => {
                 setError(user.error)
               }else{
                 setError('');
+                dispathch(login(user.data))
                 navigation.navigate(Routes.Home);
               }
             }}
